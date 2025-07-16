@@ -1,64 +1,76 @@
-#!/usr/bin/env python3
-import rospy
+import rclpy
+from rclpy.node import Node
+from rclpy.duration import Duration
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
+import time
 import math
 
-class TurtleBotAPI:
+class TurtleBotAPI(Node):
     def __init__(self):
-        rospy.init_node('turtlebot_api_node', anonymous=True)
-
-        self.cmd_vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
-        rospy.Subscriber('/scan', LaserScan, self.lidar_callback)
+        super().__init__('turtlebot3_api_node')
+        # Publisher for velocity commands
+        self.cmd_vel_pub = self.create_publisher(Twist, 'cmd_vel', 10)
+        # Subscriber for LiDAR scans
+        self.create_subscription(LaserScan, 'scan', self.lidar_callback, 10)
         self.lidar_data = None
 
-    def move_forward(self, speed=0.1, duration=2):
-        twist_msg = Twist()
-        twist_msg.linear.x = speed
-        rate = rospy.Rate(10)
-        end_time = rospy.Time.now() + rospy.Duration(duration)
+    def move(self, linear_speed=0.0, angular_speed=0.0, duration=2.0):
+        """Publish linear and angular speeds for a given duration (seconds)."""
+        msg = Twist()
+        msg.linear.x = linear_speed
+        msg.angular.z = angular_speed
 
-        while rospy.Time.now() < end_time:
-            self.cmd_vel_pub.publish(twist_msg)
+        end_time = self.get_clock().now() + Duration(seconds=duration)
+        rate = self.create_rate(10)
+        while rclpy.ok() and self.get_clock().now() < end_time:
+            self.cmd_vel_pub.publish(msg)
             rate.sleep()
-        self.stop()
-
-    def rotate(self, angle_in_degrees=90, angular_speed_deg=30):
-        twist_msg = Twist()
-        angular_speed_rad = math.radians(abs(angular_speed_deg))
-        angle_rad = math.radians(abs(angle_in_degrees))
-
-        twist_msg.angular.z = angular_speed_rad if angle_in_degrees > 0 else -angular_speed_rad
-        duration = angle_rad / angular_speed_rad
-        rate = rospy.Rate(10)
-        end_time = rospy.Time.now() + rospy.Duration(duration)
-
-        while rospy.Time.now() < end_time:
-            self.cmd_vel_pub.publish(twist_msg)
-            rate.sleep()
+        # Stop the robot after movement
         self.stop()
 
     def stop(self):
+        """Publish zero velocities to stop the robot."""
         self.cmd_vel_pub.publish(Twist())
 
-    def lidar_callback(self, data):
-        self.lidar_data = data.ranges
+    def lidar_callback(self, msg: LaserScan):
+        """Callback to store latest LiDAR ranges."""
+        self.lidar_data = msg.ranges
 
-    def get_lidar_scan(self):
+    def get_lidar(self):
+        """Return the latest LiDAR scan data."""
         return self.lidar_data
 
-if __name__ == '__main__':
+
+def drive_square(bot, side_length=1.0, speed=0.1):
+    """Drive the robot in a square pattern and print the closest obstacle distance."""
+    for _ in range(4):
+        print("Moving straight...")
+        bot.move(linear_speed=speed, duration=side_length/speed)
+        time.sleep(1.0)
+
+        print("Rotating 90 degrees...")
+        bot.move(angular_speed=0.5, duration=(math.pi/2) / 0.5)
+        time.sleep(1.0)
+
+        scan = bot.get_lidar()
+        if scan:
+            print("Closest obstacle:", min(scan))
+        else:
+            print("No LiDAR data received.")
+
+
+def main():
+    """Initialize ROS 2, create the API object, run the square drive demo, and shutdown."""
+    rclpy.init()
     bot = TurtleBotAPI()
-    rospy.sleep(1)
+    # Allow subscriptions to initialize
+    rclpy.spin_once(bot, timeout_sec=1.0)
 
-    print("Moving forward...")
-    bot.move_forward(speed=0.2, duration=3)
+    drive_square(bot)
 
-    print("Rotating...")
-    bot.rotate(angle_in_degrees=90)
+    bot.destroy_node()
+    rclpy.shutdown()
 
-    scan = bot.get_lidar_scan()
-    if scan:
-        print("LiDAR scan sample distances:", scan[:10])
-    else:
-        print("No LiDAR data received.")
+if __name__ == "__main__":
+    main()

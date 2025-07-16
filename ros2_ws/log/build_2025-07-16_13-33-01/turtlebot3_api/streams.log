@@ -1,0 +1,23 @@
+[0.806s] Invoking command in '/workspace/ros2_ws/build/turtlebot3_api': PYTHONPATH=/workspace/ros2_ws/build/turtlebot3_api/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/workspace/ros2_ws/install/turtlebot3_api/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /workspace/ros2_ws/build/turtlebot3_api/build --no-deps symlink_data
+[1.124s] running develop
+[1.209s] running egg_info
+[1.210s] creating turtlebot3_api.egg-info
+[1.211s] writing turtlebot3_api.egg-info/PKG-INFO
+[1.212s] writing dependency_links to turtlebot3_api.egg-info/dependency_links.txt
+[1.212s] writing entry points to turtlebot3_api.egg-info/entry_points.txt
+[1.213s] writing requirements to turtlebot3_api.egg-info/requires.txt
+[1.214s] writing top-level names to turtlebot3_api.egg-info/top_level.txt
+[1.214s] writing manifest file 'turtlebot3_api.egg-info/SOURCES.txt'
+[1.217s] reading manifest file 'turtlebot3_api.egg-info/SOURCES.txt'
+[1.219s] writing manifest file 'turtlebot3_api.egg-info/SOURCES.txt'
+[1.221s] running build_ext
+[1.221s] Creating /workspace/ros2_ws/install/turtlebot3_api/lib/python3.10/site-packages/turtlebot3-api.egg-link (link to .)
+[1.224s] 
+[1.225s] Installed /workspace/ros2_ws/build/turtlebot3_api
+[1.226s] running symlink_data
+[1.226s] creating /workspace/ros2_ws/install/turtlebot3_api/share/ament_index
+[1.227s] creating /workspace/ros2_ws/install/turtlebot3_api/share/ament_index/resource_index
+[1.230s] creating /workspace/ros2_ws/install/turtlebot3_api/share/ament_index/resource_index/packages
+[1.231s] symbolically linking /workspace/ros2_ws/build/turtlebot3_api/resource/turtlebot3_api -> /workspace/ros2_ws/install/turtlebot3_api/share/ament_index/resource_index/packages
+[1.231s] symbolically linking /workspace/ros2_ws/build/turtlebot3_api/package.xml -> /workspace/ros2_ws/install/turtlebot3_api/share/turtlebot3_api
+[1.251s] Invoked command in '/workspace/ros2_ws/build/turtlebot3_api' returned '0': PYTHONPATH=/workspace/ros2_ws/build/turtlebot3_api/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/workspace/ros2_ws/install/turtlebot3_api/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /workspace/ros2_ws/build/turtlebot3_api/build --no-deps symlink_data
